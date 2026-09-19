@@ -17,6 +17,7 @@ function load_wad(file) {
   reader.onload = () => {
     const bytes = new Uint8Array(reader.result);
     const endoom_offset = find_endoom(bytes);
+
     display_endoom(bytes, endoom_offset);
   }
 
@@ -101,30 +102,32 @@ const cp437_to_utf8 = [
   "\u00B0","\u2219","\u00B7","\u221A","\u207F","\u00B2","\u25A0","\u00A0"
 ];
 
-function display_endoom(bytes, offset) {
-  var table = document.createElement("table");
-  table.className = "endoom-table";
+async function display_endoom(bytes, offset) {
+  const cols = 80, rows = 25;
+  const cw = 8, ch = 16;
 
-  for (var y = 0; y < 25; y++) {
-    var tr = document.createElement("tr")
+  const canvas = document.createElement("canvas");
+  canvas.width = cols * cw;
+  canvas.height = rows * ch;
+  const ctx = canvas.getContext("2d");
+  ctx.font = "16px 'Px437_IBM_VGA_8x16', monospace";
+  ctx.textBaseline = "top";
 
-    for (var x = 0; x < 80; x++) {
-      const of = offset + (y * 80 + x) * 2;
+  for (var y = 0; y < rows; y++) {
+    for (var x = 0; x < cols; x++) {
+      const of = offset + (y * cols + x) * 2;
       const char = cp437_to_utf8[bytes[of]];
       const info = bytes[of + 1];
       const front_color = colors[info & 0b1111];
       const back_color = colors[info >> 4 & 0b111];
-      const blink = info >> 6 & 0b10000000;
 
-      var td = document.createElement("td")
-      td.textContent = char;
-      td.style.color = front_color;
-      td.style.backgroundColor = back_color;
-      tr.appendChild(td)
+      ctx.fillStyle = back_color;
+      ctx.fillRect(x * cw, y * ch, cw, ch);
+
+      ctx.fillStyle = front_color;
+      ctx.fillText(char, x * cw, y * ch);
     }
-
-    table.appendChild(tr)
   }
 
-  document.body.appendChild(table);
+  document.body.appendChild(canvas);
 }

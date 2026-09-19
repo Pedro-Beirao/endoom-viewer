@@ -1,17 +1,4 @@
-.endoom-table {
-  padding: 0;
-}
-
-table {
-  border-spacing: 0;
-}
-
-tr {
-  padding: 0;
-  margin: 0;
-}
-
-td {
-  padding: 0;
-  margin: 0;
+@font-face {
+  font-family: "Px437_IBM_VGA_8x16";
+  src: url(Px437_IBM_VGA_8x16.ttf) format("truetype");
 }
