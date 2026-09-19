@@ -1,0 +1,17 @@
+.endoom-table {
+  padding: 0;
+}
+
+table {
+  border-spacing: 0;
+}
+
+tr {
+  padding: 0;
+  margin: 0;
+}
+
+td {
+  padding: 0;
+  margin: 0;
+}
