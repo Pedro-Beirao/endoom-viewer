@@ -30,7 +30,11 @@ async function builtin_file(name) {
   load_file(blob);
 }
 
+// cache the file since it will be needed when swapping yellow and brown
+var cached_file;
 function load_file(file) {
+  cached_file = file;
+
   const reader = new FileReader();
 
   reader.onerror = () => {
@@ -92,7 +96,7 @@ const colors = [
   "#00AAAA", // 3 cyan
   "#AA0000", // 4 red
   "#AA00AA", // 5 magenta
-  "#AA5500", // 6 yellow/brown
+  "#AA5500", // 6 brown / yellow
   "#AAAAAA", // 7 white
   "#555555", // 8 dark gray
   "#5555FF", // 9 bright blue
@@ -103,6 +107,14 @@ const colors = [
   "#FFFF55", // E bright yellow
   "#FFFFFF"  // F bright white
 ];
+
+var yellow_over_brown = false;
+function get_color(index) {
+  if (index == 6 && yellow_over_brown)
+    return "#AAAA00"
+  return colors[index];
+}
+
 const cp437_to_utf8 = [
   "\u0000","\u263A","\u263B","\u2665","\u2666","\u2663","\u2660","\u2022",
   "\u25D8","\u25CB","\u25D9","\u2642","\u2640","\u266A","\u266B","\u263C",
@@ -132,16 +144,6 @@ const cp437_to_utf8 = [
   "\u00B0","\u2219","\u00B7","\u221A","\u207F","\u00B2","\u25A0","\u00A0"
 ];
 
-class Blinker {
-  constructor(x, y, char, front_color, back_color) {
-    this.x = x;
-    this.y = y;
-    this.char = char;
-    this.front_color = front_color;
-    this.back_color = back_color;
-  }
-}
-
 const COLS = 80, ROWS = 25;
 const CHAR_W = 8, CHAR_H = 16;
 
@@ -168,8 +170,8 @@ async function display_endoom(bytes, offset) {
       const of = offset + (y * COLS + x) * 2;
       const char = cp437_to_utf8[bytes[of]];
       const info = bytes[of + 1];
-      const front_color = colors[info & 0b1111];
-      const back_color = colors[info >> 4 & 0b111];
+      const front_color = get_color(info & 0b1111);
+      const back_color = get_color(info >> 4 & 0b111);
       const blink = info >> 7 & 0b1;
 
       for (const ctx of [ctx_on, ctx_off]) {
@@ -220,7 +222,9 @@ function start_blinking(canvas_on, canvas_off) {
 }
 
 function toggle_brown(el) {
-  el.textContent = el.textContent == "Brown" ? "Orange" : "Brown";
+  yellow_over_brown = !yellow_over_brown;
+  el.textContent = yellow_over_brown ? "Yellow" : "Brown";
+  load_file(cached_file);
 }
 
 function toggle_blink(el) {
