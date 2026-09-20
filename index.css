@@ -8,9 +8,16 @@ body {
   font-size: 22px;
   background-color: #111;
   color: #DDD;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
+  height: 100%;
+  padding: 0;
+}
+
+.content {
+  width: 40em;
+  max-width: 90%;
+  margin: auto;
+  height: 100%;
+  position: relative;
 }
 
 canvas {
@@ -23,26 +30,24 @@ canvas {
   margin-top: 1em;
   display: flex;
   flex-wrap: wrap;
-  width: 50em;
-  max-width: 90%;
 }
 
 .button-list label {
   display: inline-block;
   padding: 0.5em 1em;
-  border: 2px solid white;
+  border: 2px solid #DDD;
   cursor: pointer;
 }
 
 .button-list label:hover {
-  background: lightgray;
-  color: black;
+  background: #333;
+  color: white;
 }
 
 .button-list button {
   background-color: transparent;
-  color: white;
-  border: 2px solid white;
+  color: #DDD;
+  border: 2px solid #DDD;
   font: inherit;
   padding: 0.5em 1em;
   cursor: pointer;
@@ -50,18 +55,27 @@ canvas {
 }
 
 .button-list *:hover {
-  background: lightgray;
-  color: black;
+  background: #333;
+  color: white;
 }
 
 #endoom-display {
-  width: 50em;
   aspect-ratio: 1.6;
-  max-width: 90%;
+  width: 100%;
   padding: 0;
-  border: 2px solid white;
+  border: 2px solid #DDD;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+}
+
+a {
+  color: #DDD;
+}
+
+a:hover {
+  background: #333;
+  color: white;
+  text-decoration: none;
 }
