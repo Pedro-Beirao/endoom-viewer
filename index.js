@@ -1,13 +1,20 @@
-const choose_wad = document.getElementById("choose_wad");
+const choose_wad = document.getElementById("choose-wad");
 
 choose_wad.addEventListener("change", () => {
   const file = choose_wad.files?.[0];
 
   if (file)
-    load_wad(file);
+    load_file(file);
 })
 
-function load_wad(file) {
+async function builtin_file(name) {
+  const response = await fetch("/endooms/" + name);
+  const blob = await response.blob();
+
+  load_file(blob);
+}
+
+function load_file(file) {
   const reader = new FileReader();
 
   reader.onerror = () => {
@@ -18,7 +25,8 @@ function load_wad(file) {
     const bytes = new Uint8Array(reader.result);
     const endoom_offset = find_endoom(bytes);
 
-    display_endoom(bytes, endoom_offset);
+    if (endoom_offset != -1)
+      display_endoom(bytes, endoom_offset);
   }
 
   reader.readAsArrayBuffer(file);
@@ -42,6 +50,10 @@ function decode_string(bytes, offset, size) {
 }
 
 function find_endoom(bytes) {
+  const header = decode_string(bytes, 0, 4);
+  if (header != "IWAD" && header != "PWAD")
+    return 0; // this isnt a wad, simply a ENDOOM lump
+
   const numlumps = read4bytes(bytes, 4);
   const infotableofs = read4bytes(bytes, 8);
   var offset = infotableofs;
@@ -53,6 +65,8 @@ function find_endoom(bytes) {
 
     offset += 16;
   }
+
+  return -1;
 }
 
 const colors = [
@@ -106,6 +120,9 @@ async function display_endoom(bytes, offset) {
   const cols = 80, rows = 25;
   const cw = 8, ch = 16;
 
+  const endoom_display = document.getElementById("endoom-display");
+  endoom_display.innerHTML = "";
+
   const canvas = document.createElement("canvas");
   canvas.width = cols * cw;
   canvas.height = rows * ch;
@@ -129,5 +146,5 @@ async function display_endoom(bytes, offset) {
     }
   }
 
-  document.body.appendChild(canvas);
+  endoom_display.appendChild(canvas);
 }

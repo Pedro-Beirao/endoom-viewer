@@ -13,13 +13,33 @@
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
+
   <h1>ENDOOM Viewer</h1>
 
-  <label>
-    Choose WAD
-    <input id="choose_wad" type="file" accept=".wad">
-  </label>
+  <div class="button-list">
+    <label for="choose-wad" class="choose-button">Choose WAD</label>
+    <input id="choose-wad" type="file" accept=".wad" hidden>
 
+    <label for="save-image" class="choose-button">Save PNG</label>
+    <!--<input id="save-image" type="file" accept=".wad" hidden>-->
+  </div>
+
+  <div id="endoom-display">
+    nothing loaded
+  </div>
+
+  <div style="margin-top: 4em;">
+    Or you can load some ENDOOM's from these selected WADs (all made by Arsinikk):
+
+    <div class="button-list">
+      <button onclick="builtin_file('100lnm.ans')">100 Line Massacre</button>
+      <button onclick="builtin_file('200lnmas.ans')">200 Line Christmas</button>
+      <button onclick="builtin_file('hrs.ans')">Hell Revelations</button>
+      <button onclick="builtin_file('slotter.ans')">Slotter</button>
+      <button onclick="builtin_file('rust1.ans')">RUST 1</button>
+      <button onclick="builtin_file('rust2.ans')">RUST 2</button>
+    </div>
+  </div>
 
   <script src="index.js"></script>
 </body>

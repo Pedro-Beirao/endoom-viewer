@@ -2,3 +2,50 @@
   font-family: "Px437_IBM_VGA_8x16";
   src: url(Px437_IBM_VGA_8x16.ttf) format("truetype");
 }
+
+body {
+  font-family: "Px437_IBM_VGA_8x16", monospace;
+  font-size: 22px;
+  background-color: #111;
+  color: #DDD;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+canvas {
+  width: 100%;
+  image-rendering: pixelated;
+}
+
+.button-list {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: row;
+  width: 50em;
+  max-width: 90%;
+}
+
+#endoom-display {
+  width: 50em;
+  aspect-ratio: 1.6;
+  max-width: 90%;
+  padding: 0;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.choose-button {
+  margin: 0;
+  display: inline-block;
+  padding: 0.5em 1em;
+  border: 2px solid white;
+  cursor: pointer;
+}
+
+.choose-button:hover {
+  background: dimgray;
+  color: black;
+}
