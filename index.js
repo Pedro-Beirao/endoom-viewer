@@ -132,35 +132,68 @@ const cp437_to_utf8 = [
   "\u00B0","\u2219","\u00B7","\u221A","\u207F","\u00B2","\u25A0","\u00A0"
 ];
 
-async function display_endoom(bytes, offset) {
-  const cols = 80, rows = 25;
-  const cw = 8, ch = 16;
+class Blinker {
+  constructor(x, y, char, front_color, back_color) {
+    this.x = x;
+    this.y = y;
+    this.char = char;
+    this.front_color = front_color;
+    this.back_color = back_color;
+  }
+}
 
+const COLS = 80, ROWS = 25;
+const CHAR_W = 8, CHAR_H = 16;
+
+async function display_endoom(bytes, offset) {
   const endoom_display = document.getElementById("endoom-display");
   endoom_display.innerHTML = "";
 
   const canvas = document.createElement("canvas");
-  canvas.width = cols * cw;
-  canvas.height = rows * ch;
+  canvas.width = COLS * CHAR_W;
+  canvas.height = ROWS * CHAR_H;
   const ctx = canvas.getContext("2d");
   ctx.font = "16px 'Px437_IBM_VGA_8x16', monospace";
   ctx.textBaseline = "top";
+  endoom_display.appendChild(canvas);
 
-  for (var y = 0; y < rows; y++) {
-    for (var x = 0; x < cols; x++) {
-      const of = offset + (y * cols + x) * 2;
+  var blinkers = []
+
+  for (var y = 0; y < ROWS; y++) {
+    for (var x = 0; x < COLS; x++) {
+      const of = offset + (y * COLS + x) * 2;
       const char = cp437_to_utf8[bytes[of]];
       const info = bytes[of + 1];
       const front_color = colors[info & 0b1111];
       const back_color = colors[info >> 4 & 0b111];
+      const blink = info >> 7 & 0b1;
+
+      if (blink) {
+        blinkers.push(new Blinker(x, y, char, front_color, back_color));
+      }
 
       ctx.fillStyle = back_color;
-      ctx.fillRect(x * cw, y * ch, cw, ch);
+      ctx.fillRect(x * CHAR_W, y * CHAR_H, CHAR_W, CHAR_H);
 
       ctx.fillStyle = front_color;
-      ctx.fillText(char, x * cw, y * ch);
+      ctx.fillText(char, x * CHAR_W, y * CHAR_H);
     }
   }
 
-  endoom_display.appendChild(canvas);
+  handle_blinking(ctx, blinkers, false);
+}
+
+function handle_blinking(ctx, blinkers, state) {
+  for (var i = 0; i < blinkers.length; i++) {
+    const b = blinkers[i];
+    ctx.fillStyle = b.back_color;
+    ctx.fillRect(b.x * CHAR_W, b.y * CHAR_H, CHAR_W, CHAR_H);
+
+    if (state) {
+      ctx.fillStyle = b.front_color;
+      ctx.fillText(b.char, b.x * CHAR_W, b.y * CHAR_H);
+    }
+  }
+
+  setTimeout(handle_blinking, 250, ctx, blinkers, !state);
 }

@@ -6,7 +6,8 @@ Hosted at [endoom.pedro-beirao.eu](https://endoom.pedro-beirao.eu)
 
 - [ ] toggle to change orange and brown
 - [ ] add description
-- [ ] add blinking
+- [x] add blinking
+- [ ] add link to github page
 
 ## Credits
 
