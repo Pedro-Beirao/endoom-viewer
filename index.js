@@ -191,6 +191,8 @@ async function display_endoom(bytes, offset) {
 }
 
 var blink_timer = null;
+const BLINKING = 0, BLINK_OFF = 1, BLINK_ON = 2;
+var blink_state = BLINKING;
 
 function start_blinking(canvas_on, canvas_off) {
   if (blink_timer !== null)
@@ -202,6 +204,35 @@ function start_blinking(canvas_on, canvas_off) {
 
   blink_timer = setInterval(() => {
     visible = !visible;
-    canvas_on.style.visibility = visible ? "visible" : "hidden";
+    if (blink_state == BLINKING) {
+      canvas_on.style.visibility = visible ? "visible" : "hidden";
+      canvas_off.style.visibility = "visible";
+    }
+    else if (blink_state == BLINK_OFF) {
+      canvas_on.style.visibility = "hidden";
+      canvas_off.style.visibility = "visible";
+    }
+    else if (blink_state == BLINK_ON) {
+      canvas_on.style.visibility = "visible";
+      canvas_off.style.visibility = "hidden";
+    }
   }, 250);
+}
+
+function toggle_brown(el) {
+  el.textContent = el.textContent == "Brown" ? "Orange" : "Brown";
+}
+
+function toggle_blink(el) {
+  blink_state++;
+  if (blink_state > BLINK_ON)
+    blink_state = BLINKING;
+
+  if (blink_state == BLINKING)
+    el.textContent = "Blinking";
+  else if (blink_state == BLINK_OFF)
+    el.textContent = "Blink OFF";
+  else if (blink_state == BLINK_ON)
+    el.textContent = "Blink ON";
+
 }
