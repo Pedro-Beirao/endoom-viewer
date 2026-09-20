@@ -16,6 +16,7 @@ body {
 canvas {
   width: 100%;
   image-rendering: pixelated;
+  position: absolute;
 }
 
 .button-list {
@@ -62,4 +63,5 @@ canvas {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }

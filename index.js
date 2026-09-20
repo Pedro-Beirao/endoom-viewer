@@ -149,15 +149,19 @@ async function display_endoom(bytes, offset) {
   const endoom_display = document.getElementById("endoom-display");
   endoom_display.innerHTML = "";
 
-  const canvas = document.createElement("canvas");
-  canvas.width = COLS * CHAR_W;
-  canvas.height = ROWS * CHAR_H;
-  const ctx = canvas.getContext("2d");
-  ctx.font = "16px 'Px437_IBM_VGA_8x16', monospace";
-  ctx.textBaseline = "top";
-  endoom_display.appendChild(canvas);
+  const canvas_on = document.createElement("canvas");
+  const canvas_off = document.createElement("canvas");
+  canvas_on.width = COLS * CHAR_W; canvas_on.height = ROWS * CHAR_H;
+  canvas_off.width = COLS * CHAR_W; canvas_off.height = ROWS * CHAR_H;
 
-  var blinkers = []
+  endoom_display.appendChild(canvas_off);
+  endoom_display.appendChild(canvas_on);
+
+  const ctx_on = canvas_on.getContext("2d");
+  const ctx_off = canvas_off.getContext("2d");
+  ctx_off.font = "16px 'Px437_IBM_VGA_8x16', monospace";
+  ctx_on.font = "16px 'Px437_IBM_VGA_8x16', monospace";
+  ctx_off.textBaseline = "top"; ctx_on.textBaseline = "top";
 
   for (var y = 0; y < ROWS; y++) {
     for (var x = 0; x < COLS; x++) {
@@ -168,32 +172,36 @@ async function display_endoom(bytes, offset) {
       const back_color = colors[info >> 4 & 0b111];
       const blink = info >> 7 & 0b1;
 
-      if (blink) {
-        blinkers.push(new Blinker(x, y, char, front_color, back_color));
+      for (const ctx of [ctx_on, ctx_off]) {
+        ctx.fillStyle = back_color;
+        ctx.fillRect(x * CHAR_W, y * CHAR_H, CHAR_W, CHAR_H);
       }
 
-      ctx.fillStyle = back_color;
-      ctx.fillRect(x * CHAR_W, y * CHAR_H, CHAR_W, CHAR_H);
+      ctx_on.fillStyle = front_color;
+      ctx_on.fillText(char, x * CHAR_W, y * CHAR_H);
 
-      ctx.fillStyle = front_color;
-      ctx.fillText(char, x * CHAR_W, y * CHAR_H);
+      if (!blink) {
+        ctx_off.fillStyle = front_color;
+        ctx_off.fillText(char, x * CHAR_W, y * CHAR_H);
+      }
     }
   }
 
-  handle_blinking(ctx, blinkers, false);
+  start_blinking(canvas_on, canvas_off);
 }
 
-function handle_blinking(ctx, blinkers, state) {
-  for (var i = 0; i < blinkers.length; i++) {
-    const b = blinkers[i];
-    ctx.fillStyle = b.back_color;
-    ctx.fillRect(b.x * CHAR_W, b.y * CHAR_H, CHAR_W, CHAR_H);
+var blink_timer = null;
 
-    if (state) {
-      ctx.fillStyle = b.front_color;
-      ctx.fillText(b.char, b.x * CHAR_W, b.y * CHAR_H);
-    }
-  }
+function start_blinking(canvas_on, canvas_off) {
+  if (blink_timer !== null)
+    clearInterval(blink_timer);
 
-  setTimeout(handle_blinking, 250, ctx, blinkers, !state);
+  var visible = true;
+  canvas_on.style.visibility = "visible";
+  canvas_off.style.visibility = "visible";
+
+  blink_timer = setInterval(() => {
+    visible = !visible;
+    canvas_on.style.visibility = visible ? "visible" : "hidden";
+  }, 250);
 }
