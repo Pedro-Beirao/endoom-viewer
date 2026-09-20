@@ -7,6 +7,22 @@ choose_wad.addEventListener("change", () => {
     load_file(file);
 })
 
+function save_image() {
+  const canvas = document.querySelector("canvas")
+  if (canvas == null)
+    return;
+
+  const image_url = canvas.toDataURL('image/png');
+  const download_link = document.createElement('a');
+  download_link.href = image_url;
+  download_link.download = 'ENDOOM.png';
+
+  // simulate click
+  document.body.appendChild(download_link);
+  download_link.click();
+  document.body.removeChild(download_link);
+}
+
 async function builtin_file(name) {
   const response = await fetch("/endooms/" + name);
   const blob = await response.blob();

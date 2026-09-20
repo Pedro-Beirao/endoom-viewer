@@ -20,8 +20,7 @@
     <label for="choose-wad" class="choose-button">Choose WAD</label>
     <input id="choose-wad" type="file" accept=".wad" hidden>
 
-    <label for="save-image" class="choose-button">Save PNG</label>
-    <!--<input id="save-image" type="file" accept=".wad" hidden>-->
+    <button onclick="save_image()">Save PNG</button>
   </div>
 
   <div id="endoom-display">
@@ -32,7 +31,7 @@
     Or you can load some ENDOOM's from these selected WADs (all made by Arsinikk):
   </div>
 
-  <div class="button-list">
+  <div class="button-list" style="gap: 1em;">
     <button onclick="builtin_file('100lnm.ans')">100 Line Massacre</button>
     <button onclick="builtin_file('200lnmas.ans')">200 Line Christmas</button>
     <button onclick="builtin_file('hrs.ans')">Hell Revelations</button>
