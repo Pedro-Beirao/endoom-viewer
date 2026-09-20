@@ -92,7 +92,7 @@ const colors = [
   "#00AAAA", // 3 cyan
   "#AA0000", // 4 red
   "#AA00AA", // 5 magenta
-  "#AAAA00", // 6 yellow/brown
+  "#AA5500", // 6 yellow/brown
   "#AAAAAA", // 7 white
   "#555555", // 8 dark gray
   "#5555FF", // 9 bright blue
