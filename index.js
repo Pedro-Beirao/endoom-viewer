@@ -8,7 +8,7 @@ choose_wad.addEventListener("change", () => {
 })
 
 function save_image() {
-  const canvas = document.querySelector("canvas")
+  const canvas = [...document.querySelectorAll("canvas")].find(c => getComputedStyle(c).visibility != "hidden")
   if (canvas == null)
     return;
 
@@ -208,7 +208,7 @@ function start_blinking(canvas_on, canvas_off) {
     visible = !visible;
     if (blink_state == BLINKING) {
       canvas_on.style.visibility = visible ? "visible" : "hidden";
-      canvas_off.style.visibility = "visible";
+      canvas_off.style.visibility = visible ? "hidden" : "visible";
     }
     else if (blink_state == BLINK_OFF) {
       canvas_on.style.visibility = "hidden";
