@@ -16,6 +16,7 @@ body {
   width: 40em;
   max-width: 90%;
   margin: auto;
+  margin-bottom: 3em;
   height: 100%;
   position: relative;
 }
